@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import simpledialog
 from game import Game
 from ai import SimpleAI
 
@@ -9,6 +10,7 @@ class GameUI:
         self.ai = SimpleAI()
         self.ai_mode = False
         self.auto_job = None
+        self.load_advice()
 
         self.root.title("2048 with AI")
         self.cells = []
@@ -26,6 +28,9 @@ class GameUI:
 
         self.comment_label = tk.Label(root, text='', wraplength=300, justify='left')
         self.comment_label.grid(row=5, column=0, columnspan=4)
+        if self.advice_history:
+            preview = ' | '.join(self.advice_history[-3:])
+            self.comment_label.config(text='以前のアドバイス: {}'.format(preview))
 
         self.toggle_btn = tk.Button(root, text='Enable AI', command=self.toggle_ai)
         self.toggle_btn.grid(row=6, column=0, columnspan=1)
@@ -36,6 +41,27 @@ class GameUI:
 
         root.bind('<Key>', self.on_key)
         self.update_ui()
+
+    def load_advice(self):
+        try:
+            with open('advice.txt', 'r', encoding='utf-8') as f:
+                self.advice_history = [line.strip() for line in f if line.strip()]
+        except IOError:
+            self.advice_history = []
+
+    def save_advice(self, text):
+        if not text:
+            return
+        self.advice_history.append(text)
+        with open('advice.txt', 'a', encoding='utf-8') as f:
+            f.write(text + '\n')
+
+    def ask_advice(self):
+        advice = simpledialog.askstring('アドバイス',
+            'ゲームオーバーです。気づいた点や意見があれば入力してください:')
+        if advice:
+            self.save_advice(advice)
+            self.comment_label.config(text='アドバイスありがとうございます!')
 
     def on_key(self, event):
         if self.ai_mode:
@@ -101,6 +127,7 @@ class GameUI:
         if not self.game.can_move():
             self.comment_label.config(text='Game Over!')
             self.stop_auto()
+            self.ask_advice()
 
 if __name__ == '__main__':
     root = tk.Tk()
