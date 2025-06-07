@@ -6,6 +6,10 @@ class Game:
         self.add_random_tile()
         self.add_random_tile()
 
+    def get_state(self):
+        """Return the current board flattened as a tuple."""
+        return tuple(tile for row in self.board for tile in row)
+
     def reset(self):
         self.score = 0
         self.board = [[0]*self.size for _ in range(self.size)]
@@ -60,6 +64,17 @@ class Game:
             self.board = new_board
             self.score += total_score
         return changed_any, total_score
+
+    def step(self, direction):
+        """Apply a move and add a random tile. Return reward and done flag."""
+        changed, reward = self.move(direction)
+        if changed:
+            self.add_random_tile()
+        done = not self.can_move()
+        return reward, done
+
+    def max_tile(self):
+        return max(max(row) for row in self.board)
 
     def can_move(self):
         if any(0 in row for row in self.board):

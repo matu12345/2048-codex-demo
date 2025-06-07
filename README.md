@@ -1,15 +1,16 @@
 # 2048 Codex Demo
 
-This is a small 2048 implementation written in Python using Tkinter. The game includes a simple AI that can play the game and explain its choices.
+This project contains a simple implementation of the 2048 puzzle and a Q-Learning
+agent that learns to play the game.
 
 ## Features
 
-- Switch between manual play and AI play.
-- Auto play mode with a stop button.
-- Commentary label showing why the AI chose its move.
-- When auto play ends, the AI shows its own strategy tip in Japanese and saves it to `tips.txt`. Tips are remembered and guide future games.
+- 2048 game logic in pure Python
+- Q-Learning agent using an ε-greedy policy
+- Normalisation of board states to avoid rotational duplicates
+- Batch training script printing the score and largest tile for each episode
 
 ## Running
 
-Execute `python3 main.py` and use the buttons to control AI behaviour. Arrow keys allow manual moves when AI mode is disabled.
+Run `python3 qlearning.py --episodes 1000` to train the agent for a number of episodes. Progress for each episode will be printed to the console.
 
