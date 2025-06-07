@@ -1,3 +1,6 @@
+
+import random
+
 class Game:
     def __init__(self, size=4):
         self.size = size
@@ -17,7 +20,6 @@ class Game:
         self.add_random_tile()
 
     def add_random_tile(self):
-        import random
         empties = [
             (r, c)
             for r in range(self.size)
@@ -26,30 +28,30 @@ class Game:
         ]
         if not empties:
             return
-        r,c = random.choice(empties)
+        r, c = random.choice(empties)
         self.board[r][c] = 4 if random.random() < 0.1 else 2
 
     def _move_row_left(self, row):
-        new_row = [i for i in row if i!=0]
+        new_row = [i for i in row if i != 0]
         score = 0
-        i=0
-        while i < len(new_row)-1:
-            if new_row[i]==new_row[i+1]:
-                new_row[i]*=2
+        i = 0
+        while i < len(new_row) - 1:
+            if new_row[i] == new_row[i+1]:
+                new_row[i] *= 2
                 score += new_row[i]
                 new_row.pop(i+1)
-                i+=1
+                i += 1
             else:
-                i+=1
-        new_row += [0]*(self.size-len(new_row))
-        changed = new_row!=row
+                i += 1
+        new_row += [0] * (self.size - len(new_row))
+        changed = new_row != row
         return new_row, score, changed
 
     def move(self, direction):
         changed_any = False
         total_score = 0
         board = self.board
-        for _ in range({'Left':0,'Up':3,'Right':2,'Down':1}[direction]):
+        for _ in range({'Left': 0, 'Up': 3, 'Right': 2, 'Down': 1}[direction]):
             board = [list(row) for row in zip(*board[::-1])]
         new_board = []
         for row in board:
@@ -58,7 +60,7 @@ class Game:
             total_score += score
             if changed:
                 changed_any = True
-        for _ in range({'Left':0,'Up':1,'Right':2,'Down':3}[direction]):
+        for _ in range({'Left': 0, 'Up': 1, 'Right': 2, 'Down': 3}[direction]):
             new_board = [list(row) for row in zip(*new_board[::-1])]
         if changed_any:
             self.board = new_board
@@ -80,11 +82,11 @@ class Game:
         if any(0 in row for row in self.board):
             return True
         for r in range(self.size):
-            for c in range(self.size-1):
-                if self.board[r][c]==self.board[r][c+1]:
+            for c in range(self.size - 1):
+                if self.board[r][c] == self.board[r][c + 1]:
                     return True
         for c in range(self.size):
-            for r in range(self.size-1):
-                if self.board[r][c]==self.board[r+1][c]:
+            for r in range(self.size - 1):
+                if self.board[r][c] == self.board[r + 1][c]:
                     return True
         return False
